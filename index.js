@@ -43,7 +43,7 @@ const CAKE_RESTOCKED = "CAKE_RESTOCKED";
 function orderCake() {
   return {
     type: CAKE_ORDERED,
-    quantity: 1,
+    payload: 1,
   };
 }
 
@@ -85,6 +85,7 @@ const reducer = (state = initialState, action) => {
  */
 const redux = require("redux");
 const createStore = redux.createStore;
+const bindActionCreators = redux.bindActionCreators;
 //1
 const store = createStore(reducer); //Remember, the reducer function above has the state of the app. So yes, our store now has the app's state
 
@@ -97,12 +98,21 @@ const unsubscribe = store.subscribe(() =>
 );
 
 //3
-store.dispatch(orderCake());
-store.dispatch(orderCake());
-store.dispatch(orderCake());
-store.dispatch(restockCake());
-store.dispatch(restockCake(6));
-store.dispatch(restockCake(-12));
+// store.dispatch(orderCake());
+// store.dispatch(orderCake());
+// store.dispatch(orderCake());
+// store.dispatch(restockCake());
+// store.dispatch(restockCake(6));
+// store.dispatch(restockCake(-12));
+
+// Alternative way to implement the above
+const actions = bindActionCreators({ orderCake, restockCake }, store.dispatch);
+actions.orderCake();
+actions.orderCake();
+actions.orderCake();
+actions.restockCake();
+actions.restockCake(6);
+actions.restockCake(-12);
 //5
 unsubscribe();
 //After here, store.dispatch will not work because we have unsubscribed from the store
