@@ -31,7 +31,8 @@
 
 // CREATING AN ACTION
 const CAKE_ORDERED = "CAKE_ORDERED";
-
+//CREATION OF ANOTHER ACTION
+const CAKE_RESTOCKED = "CAKE_RESTOCKED";
 // Action creator is a function that returns an action.
 /**
  * We could actually use just actions (which is an object),
@@ -46,6 +47,13 @@ function orderCake() {
   };
 }
 
+function restockCake(qty = 1) {
+  return {
+    type: CAKE_RESTOCKED,
+    payload: qty,
+  };
+}
+
 //CREATING A REDUCER
 const initialState = { numOfCake: 10 };
 
@@ -55,6 +63,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state, //this tells your reducer to only change numOfCakes and leave out other properties you may have
         numOfCake: state.numOfCake - 1, //or numOfCake:state.numOfCake - action.quantity
+      };
+    case CAKE_RESTOCKED:
+      return {
+        ...state,
+        numOfCake: state.numOfCake + action.payload,
       };
     default:
       return state;
@@ -87,7 +100,9 @@ const unsubscribe = store.subscribe(() =>
 store.dispatch(orderCake());
 store.dispatch(orderCake());
 store.dispatch(orderCake());
-
+store.dispatch(restockCake());
+store.dispatch(restockCake(6));
+store.dispatch(restockCake(-12));
 //5
 unsubscribe();
 //After here, store.dispatch will not work because we have unsubscribed from the store
