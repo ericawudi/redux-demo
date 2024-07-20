@@ -43,10 +43,10 @@ const ICECREAM_RESTOCKED = "ICECREAM_RESTOCKED";
  * function an not have to go to all instances where we
  * dispatched an action object to update it in future
  */
-function orderCake() {
+function orderCake(qty = 1) {
   return {
     type: CAKE_ORDERED,
-    payload: 1,
+    payload: qty,
   };
 }
 
@@ -72,20 +72,29 @@ function restockIcecream(qty = 1) {
 }
 
 //CREATING A REDUCER
-const initialState = { numOfCakes: 10, numOfIcecreams: 20 };
+// const initialState = { numOfCakes: 10, numOfIcecreams: 20 };
+const initialCakeState = { numOfCakes: 10 };
+const initialIceCreamState = { numOfIcecreams: 20 };
 
-const reducer = (state = initialState, action) => {
+const cakeReducer = (state = initialCakeState, action) => {
   switch (action.type) {
     case CAKE_ORDERED:
       return {
-        ...state, //this tells your reducer to only change numOfCakes and leave out other properties you may have
-        numOfCakes: state.numOfCakes - 1, //or numOfCake:state.numOfCake - action.quantity
+        ...state,
+        numOfCakes: state.numOfCakes - action.payload,
       };
     case CAKE_RESTOCKED:
       return {
         ...state,
         numOfCakes: state.numOfCakes + action.payload,
       };
+    default:
+      return state;
+  }
+};
+
+const iceCreamReducer = (state = initialIceCreamState, action) => {
+  switch (action.type) {
     case ICECREAM_ORDER:
       return {
         ...state,
@@ -100,7 +109,6 @@ const reducer = (state = initialState, action) => {
       return state;
   }
 };
-
 // CREATING A STORE.
 // A store has about 5 functionalities.
 /**
@@ -113,8 +121,14 @@ const reducer = (state = initialState, action) => {
 const redux = require("redux");
 const createStore = redux.createStore;
 const bindActionCreators = redux.bindActionCreators;
+const combineReducers = redux.combineReducers;
+
 //1
-const store = createStore(reducer); //Remember, the reducer function above has the state of the app. So yes, our store now has the app's state
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+const store = createStore(rootReducer);
 
 //2
 console.log("Initial state", store.getState());
