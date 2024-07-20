@@ -33,6 +33,9 @@
 const CAKE_ORDERED = "CAKE_ORDERED";
 //CREATION OF ANOTHER ACTION
 const CAKE_RESTOCKED = "CAKE_RESTOCKED";
+
+const ICECREAM_ORDER = "ICECREAM_ORDER";
+const ICECREAM_RESTOCKED = "ICECREAM_RESTOCKED";
 // Action creator is a function that returns an action.
 /**
  * We could actually use just actions (which is an object),
@@ -54,20 +57,44 @@ function restockCake(qty = 1) {
   };
 }
 
+function orderIcecream(qty = 1) {
+  return {
+    type: ICECREAM_ORDER,
+    payload: qty,
+  };
+}
+
+function restockIcecream(qty = 1) {
+  return {
+    type: ICECREAM_RESTOCKED,
+    payload: qty,
+  };
+}
+
 //CREATING A REDUCER
-const initialState = { numOfCake: 10 };
+const initialState = { numOfCakes: 10, numOfIcecreams: 20 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case CAKE_ORDERED:
       return {
         ...state, //this tells your reducer to only change numOfCakes and leave out other properties you may have
-        numOfCake: state.numOfCake - 1, //or numOfCake:state.numOfCake - action.quantity
+        numOfCakes: state.numOfCakes - 1, //or numOfCake:state.numOfCake - action.quantity
       };
     case CAKE_RESTOCKED:
       return {
         ...state,
-        numOfCake: state.numOfCake + action.payload,
+        numOfCakes: state.numOfCakes + action.payload,
+      };
+    case ICECREAM_ORDER:
+      return {
+        ...state,
+        numOfIcecreams: state.numOfIcecreams - action.payload,
+      };
+    case ICECREAM_RESTOCKED:
+      return {
+        ...state,
+        numOfIcecreams: state.numOfIcecreams + action.payload,
       };
     default:
       return state;
@@ -106,13 +133,22 @@ const unsubscribe = store.subscribe(() =>
 // store.dispatch(restockCake(-12));
 
 // Alternative way to implement the above
-const actions = bindActionCreators({ orderCake, restockCake }, store.dispatch);
+const actions = bindActionCreators(
+  { orderCake, restockCake, orderIcecream, restockIcecream },
+  store.dispatch
+);
 actions.orderCake();
 actions.orderCake();
 actions.orderCake();
 actions.restockCake();
 actions.restockCake(6);
 actions.restockCake(-12);
+actions.restockIcecream(2);
+actions.orderIcecream(10);
+actions.orderIcecream(1);
+actions.restockIcecream(3);
+actions.restockIcecream();
+
 //5
 unsubscribe();
 //After here, store.dispatch will not work because we have unsubscribed from the store
