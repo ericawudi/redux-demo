@@ -15,5 +15,5 @@ store.dispatch(iceCreamActions.ordered(1));
 store.dispatch(iceCreamActions.ordered(2));
 store.dispatch(iceCreamActions.ordered(5));
 store.dispatch(iceCreamActions.restocked(5));
-store.dispatch(iceCreamActions.restocked(5));
+store.dispatch(iceCreamActions.restocked(3));
 unsubsribe();
